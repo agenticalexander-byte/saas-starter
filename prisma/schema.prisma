@@ -1,0 +1,24 @@
+// This file defines your database schema.
+// Run `npx prisma migrate dev` after editing this to apply changes to the real database.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Two URLs because Supabase gives you a pooled connection (for the app)
+  // and a direct connection (for running migrations). See README for where these come from.
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  userId      String   // Clerk user ID — which user owns this project
+  name        String
+  description String?
+  status      String   @default("active") // "active" | "paused" | "done"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
